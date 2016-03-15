@@ -1,0 +1,44 @@
+import org.openhab.core.library.types.*
+//import org.openhab.core.library.items.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+
+import org.joda.time.*
+
+//import java.util.concurrent.locks.ReentrantLock
+//import java.util.ArrayList
+
+var java.util.concurrent.locks.ReentrantLock lock = new java.util.concurrent.locks.ReentrantLock()
+
+//var java.util.ArrayList zonesRequestsList = new java.util.ArrayList()
+
+val int Relay1_Duration_Default = 1
+
+rule "Irrigation startup"
+when
+	System started
+then
+	// ensure all relays are off at startup
+	sendCommand(Relay1_RelayCtrl, OFF)
+
+	// initialise durations
+	if (Relay1_Duration.state == Uninitialized) {
+		postUpdate(Relay1_Duration, Relay1_Duration_Default)
+	}
+end
+
+rule "Relay Manual"
+when
+	Item Relay1_Manual received command
+then
+	lock.lock()
+  try {
+		logInfo("automationboard", "Manual request relay1 " + receivedCommand.toString())
+		if (receivedCommand == "ON")
+			sendCommend(Relay1_Request, ON)
+		else
+			sendCommand(Relay1_Request, OFF)
+	} finally {
+    lock.unlock()
+  }
+end

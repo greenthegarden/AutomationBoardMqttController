@@ -1,0 +1,9 @@
+Group    AutomationBoard
+
+/* Relay 1 */
+Number   Relay1_Duration   "Duration [%d mins]" (AutomationBoard)	{mqtt="<[pi:ab/control/duration_1:state:default]"}
+Switch   Relay1_RelayCtrl                       (AutomationBoard)	{mqtt=">[pi:ab/control/relay_1:command:ON:1],>[pi:ab/control/relay_1:command:OFF:0],<[pi:ab/status/relay_1:state:MAP(1on0off.map)]"}
+Switch   Relay1_Auto		   "Automatic State"    (AutomationBoard)
+Switch   Relay1_Manual	   "Manual State"       (AutomationBoard)
+Switch   Relay1_Request
+Switch   Relay1_Run

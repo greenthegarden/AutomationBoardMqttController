@@ -1,0 +1,12 @@
+sitemap automationboard label="AutomationBoard Controller"
+{
+	Frame {
+		Text label="Relay 1" {
+			Setpoint item=Relay1_Duration minValue=0 maxValue=600 step=5
+			Switch item=Relay1_Auto visibility=[Zone1_Auto==ON]
+			Switch item=Relay1_Manual visibility=[Zone1_Auto!=ON]
+			Switch item=relay1_RelayCtrl
+			Switch item=Relay1_Run
+    }
+  }
+}
