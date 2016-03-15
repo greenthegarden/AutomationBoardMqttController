@@ -10,6 +10,7 @@ boolean mqtt_connect()
     publish_ip_address();
     // ... and subscribe to topics (should have list)
     mqttClient.subscribe("ab/control/#");
+    mqttClient.subscribe("ab/request/#");
   } else {
       DEBUG_LOG(1, "failed, rc=");
       DEBUG_LOG(1, mqttClient.state());
@@ -59,6 +60,7 @@ void callback(char* topic, uint8_t* payload, unsigned int payloadLength)
   }
   if (requestTopicFound) {
     if (topicIdx == 0) {  // topic is STATE_REQUEST
+      
     } else {  // unknown request topic has arrived - ignore!!
       DEBUG_LOG(1, "Unknown request topic arrived");
     }
@@ -79,38 +81,30 @@ void callback(char* topic, uint8_t* payload, unsigned int payloadLength)
     if (controlTopicFound) {
       DEBUG_LOG(1, "Control topic index");
       DEBUG_LOG(1, topicIdx);
-      switch (topicIdx) {
-        case 0 :    // RELAY_1_CONTROL
-          DEBUG_LOG(1, "RELAY_1_CONTROL topic arrived");
-          if (strcmp(message, "ON") == 0)
-            relay_switch_on(0);
-          else if (strcmp(message, "OFF") == 0)
-            relay_switch_off(0);
-          break;
-        case 1 :    // topic is RELAY_2_CONTROL
-          DEBUG_LOG(1, "RELAY_2_CONTROL topic arrived");
-          if (strcmp(message, "ON") == 0)
-            relay_switch_on(1);
-          else if (strcmp(message, "OFF") == 0)
-            relay_switch_off(1);
-          break;
-        case 2 :    // topic is RELAY_3_CONTROL
-          DEBUG_LOG(1, "RELAY_3_CONTROL topic arrived");
-          if (strcmp(message, "ON") == 0)
-            relay_switch_on(2);
-          else if (strcmp(message, "OFF") == 0)
-            relay_switch_off(2);
-          break;
-        case 4 :    // topic is RELAY_4_CONTROL
-          DEBUG_LOG(1, "RELAY_4_CONTROL topic arrived");
-          if (strcmp(message, "ON") == 0)
-            relay_switch_on(3);
-          else if (strcmp(message, "OFF") == 0)
-            relay_switch_off(3);
-          break;
-        default :   // unknown control topic has arrived - ignore!!
+      if (topicIdx == 0) {
+          DEBUG_LOG(1, "RELAY_CONTROL topic arrived");
+          // message is expected to be in format "relay,duration"
+          // get relay and duration from message
+          // see http://arduino.stackexchange.com/questions/1013/how-do-i-split-an-incoming-string
+          char* separator = strchr(message, COMMAND_SEPARATOR);
+          DEBUG_LOG(1, "separator: ");
+          DEBUG_LOG(1, separator);
+          if (separator != 0) {
+            byte relayIdx = atoi(message);
+            DEBUG_LOG(1, "relayIdx: ");
+            DEBUG_LOG(1, relayIdx);
+            ++separator;
+            unsigned long duration = atoi(separator);
+            DEBUG_LOG(1, "duration: ");
+            DEBUG_LOG(1, duration);
+            if (duration>0) {
+              relay_switch_on_with_timer(relayIdx, duration);
+            } else {
+              relay_switch_off(relayIdx);
+            }
+          }
+      } else {
           DEBUG_LOG(1, "Unknown control topic arrived");
-          break;
       }
     }
   }
@@ -149,6 +143,9 @@ void setup()
   --------------------------------------------------------------------------------------*/
 void loop()
 {
+  // require an Alarm.delay in order to allow alarms to work
+  Alarm.delay(0);
+
   if (!mqttClient.connected()) {
     long now = millis();
     if (now - lastReconnectAttempt > 5000) {

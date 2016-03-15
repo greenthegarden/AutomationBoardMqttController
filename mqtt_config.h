@@ -12,7 +12,7 @@ const int MQTT_PORT               = 1883;
 //#define MQTT_KEEPALIVE              300
 
 long lastReconnectAttempt         = 0;
-const char COMMAND_SEPARATOR      = ':';
+const char COMMAND_SEPARATOR      = ',';
 
 char message[BUFFER_SIZE];
 
@@ -24,20 +24,14 @@ const char IP_ADDR_STATUS[]    PROGMEM = "ab/status/ip_addr";
 const char UPTIME_STATUS[]     PROGMEM = "ab/status/uptime";
 const char MEMORY_STATUS[]     PROGMEM = "ab/status/memory";
 const char TIME_STATUS[]       PROGMEM = "ab/status/time";
-const char RELAY_1_STATUS[]    PROGMEM = "ab/status/relay_1";
-const char RELAY_2_STATUS[]    PROGMEM = "ab/status/relay_2";
-const char RELAY_3_STATUS[]    PROGMEM = "ab/status/relay_3";
-const char RELAY_4_STATUS[]    PROGMEM = "ab/status/relay_4";
+const char RELAY_STATUS[]      PROGMEM = "ab/status/relay";
 
 PGM_P const STATUS_TOPICS[]    PROGMEM = { CONNECTED_STATUS,    // idx = 0
                                            IP_ADDR_STATUS,      // idx = 1
                                            UPTIME_STATUS,       // idx = 2
                                            MEMORY_STATUS,       // idx = 3
                                            TIME_STATUS,         // idx = 4
-                                           RELAY_1_STATUS,      // idx = 5
-                                           RELAY_2_STATUS,      // idx = 6
-                                           RELAY_3_STATUS,      // idx = 7
-                                           RELAY_4_STATUS,      // idx = 8
+                                           RELAY_STATUS,        // idx = 5
                                           };
 
 // Relayduino Input topics
@@ -62,7 +56,7 @@ PGM_P const INPUT_TOPICS[]     PROGMEM = { ANALOG_IN_1_INPUT,     // idx = 0
 
 // Request topics
 
-const char STATE_REQUEST[]     PROGMEM = "relayduino/request/relay_state";
+const char STATE_REQUEST[]     PROGMEM = "ab/request/relay_state";
 
 PGM_P const REQUEST_TOPICS[]   PROGMEM = { STATE_REQUEST,          // idx = 0
                                          };
@@ -70,25 +64,10 @@ PGM_P const REQUEST_TOPICS[]   PROGMEM = { STATE_REQUEST,          // idx = 0
 
 // Control topics
 
-const char RELAY_1_CONTROL[]   PROGMEM = "ab/control/relay_1";
-const char RELAY_2_CONTROL[]   PROGMEM = "ab/control/relay_2";
-const char RELAY_3_CONTROL[]   PROGMEM = "ab/control/relay_3";
-const char RELAY_4_CONTROL[]   PROGMEM = "ab/control/relay_4";
+const char RELAY_CONTROL[]   PROGMEM = "ab/control/relay";
 
-const char DURATION_1_CTRL[]   PROGMEM = "ab/control/duration_1";
-const char DURATION_2_CTRL[]   PROGMEM = "ab/control/duration_2";
-const char DURATION_3_CTRL[]   PROGMEM = "ab/control/duration_3";
-const char DURATION_4_CTRL[]   PROGMEM = "ab/control/duration_4";
-
-PGM_P const CONTROL_TOPICS[]   PROGMEM = { RELAY_1_CONTROL,     // idx = 0
-                                           RELAY_2_CONTROL,     // idx = 1
-                                           RELAY_3_CONTROL,     // idx = 2
-                                           RELAY_4_CONTROL,     // idx = 3
-                                           DURATION_1_CTRL,     // idx = 4
-                                           DURATION_2_CTRL,     // idx = 5
-                                           DURATION_3_CTRL,     // idx = 6
-                                           DURATION_4_CTRL,     // idx = 7
-                                          };
+PGM_P const CONTROL_TOPICS[]   PROGMEM = { RELAY_CONTROL,     // idx = 0
+                                         };
 
 
 // callback function definition
@@ -118,6 +97,17 @@ void publish_uptime()
   ltoa(millis(), charBuffer, 10);
   mqttClient.publish(progBuffer, charBuffer);
 }
+
+void publish_alarm_id(byte ref = 255)
+{
+  if (ref == 255)
+    ref = Alarm.getTriggeredAlarmId();
+  progBuffer[0] = '\0';
+  strcpy_P(progBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[5])));
+  char str[4];
+  mqttClient.publish(progBuffer, itoa(ref, str, 10));
+}
+
 
 
 #endif   /* AUTOMATIONBOARDMQTTCONTROLLER_MQTT_CONFIG_H_ */

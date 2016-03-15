@@ -65,9 +65,19 @@ byte relay_switch_on(byte idx)
     digitalWrite(RELAY_PINS_USED[idx], HIGH);
     DEBUG_LOG(1, "relay on");
     progBuffer[0] = '\0';
-    strcpy_P(progBuffer, (PGM_P)pgm_read_word(&(STATUS_TOPICS[4])));
+    strcpy_P(progBuffer, (PGM_P)pgm_read_word(&(STATUS_TOPICS[5])));
     char str[2];
     mqttClient.publish(progBuffer, itoa(idx+1, str, 10));
+    return 1;
+  }
+  return 0;
+}
+
+byte relay_switch_on_with_timer(byte idx, unsigned long duration)
+{
+  if (relay_switch_on(idx)) {
+    currentTimerRef = Alarm.timerOnce(duration * SECS_PER_MIN, relays_switch_off);
+    publish_alarm_id(currentTimerRef);
     return 1;
   }
   return 0;
