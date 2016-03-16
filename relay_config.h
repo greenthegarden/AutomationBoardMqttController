@@ -18,21 +18,11 @@ byte relay_switch_off(byte idx)
   // only switch relay off if it is currently on
   if (relay_state(idx)) {
     digitalWrite(RELAY_PINS_USED[idx], LOW);
+    DEBUG_LOG(1, "relay off");
     publish_relay_state(idx, false);
-//    DEBUG_LOG(1, "relay off");
-//    progBuffer[0] = '\0';
-//    strcpy_P(progBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[6])));
-////    progBuffer[0] = '\0';
-////    strcpy_P(progBuffer, (PGM_P)pgm_read_word(&(STATUS_TOPICS[6])));
-////    char str[2];
-//    charBuffer[0] = '\0';
-////    sprintf(charBuffer, "%s%s%s", itoa(idx+1, str, 10), COMMAND_SEPARATOR, 'OFF');
-//    sprintf(charBuffer, "%s%s%s", idx+1, COMMAND_SEPARATOR, 'OFF');
-//    DEBUG_LOG(1, "progBuffer: ");
-//    DEBUG_LOG(1, progBuffer);
-//    DEBUG_LOG(1, "charBuffer: ");
-//    DEBUG_LOG(1, charBuffer);
-//    mqttClient.publish(progBuffer, charBuffer);
+    return 1;
+  } else {
+    DEBUG_LOG(1, "relay already off");
   }
   return 0;
 }
@@ -72,27 +62,11 @@ byte relay_switch_on(byte idx)
 {
   if (!relay_state(idx)) {
     digitalWrite(RELAY_PINS_USED[idx], HIGH);
+    DEBUG_LOG(1, "relay on");
     publish_relay_state(idx, true);
-//    DEBUG_LOG(1, "relay on");
-//    progBuffer[0] = '\0';
-//    strcpy_P(progBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[6])));
-////    progBuffer[0] = '\0';
-////    strcpy_P(progBuffer, (PGM_P)pgm_read_word(&(STATUS_TOPICS[6])));
-//    // create message in format "idx,ON"
-//    // add relay index
-//    char str[2];
-// //   itoa(idx+1, str, 10);
-//    charBuffer[0] = '\0';
-////    strcat(charBuffer, str);
-////    strcat(charBuffer, COMMAND_SEPARATOR);
-////    strcat(charBuffer, 'ON');
-//    sprintf(charBuffer, "%s%s%s", itoa(idx+1, str, 10), COMMAND_SEPARATOR, 'ON');
-//    DEBUG_LOG(1, "progBuffer: ");
-//    DEBUG_LOG(1, progBuffer);
-//    DEBUG_LOG(1, "charBuffer: ");
-//    DEBUG_LOG(1, charBuffer);
-//    mqttClient.publish(progBuffer, charBuffer);
     return 1;
+  } else {
+    DEBUG_LOG(1, "relay already on");
   }
   return 0;
 }

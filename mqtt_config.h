@@ -118,23 +118,22 @@ void publish_alarm_id(byte ref = 255)
 }
 
 void publish_relay_state(byte relayIdx, boolean relayState) {
+  charBuffer[0] = '\0';
+  if (relayState) { // relay ON
+    DEBUG_LOG(1, "relay on");
+    sprintf(charBuffer, "%i%c%i", relayIdx + 1, COMMAND_SEPARATOR, 1);
+  } else {
+    DEBUG_LOG(1, "relay off");
+    sprintf(charBuffer, "%i%c%i", relayIdx + 1, COMMAND_SEPARATOR, 0);
+  }
+  DEBUG_LOG(1, "charBuffer: ");
+  DEBUG_LOG(1, charBuffer);
   progBuffer[0] = '\0';
   strcpy_P(progBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[6])));
   // create message in format "idx,ON"
   // add relay index
   DEBUG_LOG(1, "progBuffer: ");
   DEBUG_LOG(1, progBuffer);
-  charBuffer[0] = '\0';
-  sprintf(charBuffer, "%s%s", relayIdx + 1, COMMAND_SEPARATOR);
-  if (relayState) { // relay ON
-    DEBUG_LOG(1, "relay on");
-    sprintf(charBuffer, "%s%s%s", relayIdx + 1, COMMAND_SEPARATOR, 'ON');
-  } else {
-    DEBUG_LOG(1, "relay off");
-    sprintf(charBuffer, "%s%s%s", relayIdx + 1, COMMAND_SEPARATOR, 'OFF');
-  }
-  DEBUG_LOG(1, "charBuffer: ");
-  DEBUG_LOG(1, charBuffer);
   mqttClient.publish(progBuffer, charBuffer);
 }
 

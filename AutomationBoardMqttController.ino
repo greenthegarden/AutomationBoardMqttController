@@ -91,7 +91,7 @@ void callback(char* topic, uint8_t* payload, unsigned int payloadLength)
           DEBUG_LOG(1, "separator: ");
           DEBUG_LOG(1, separator);
           if (separator != 0) {
-            byte relayIdx = atoi(message);
+            byte relayIdx = atoi(message)-1;
             DEBUG_LOG(1, "relayIdx: ");
             DEBUG_LOG(1, relayIdx);
             ++separator;
