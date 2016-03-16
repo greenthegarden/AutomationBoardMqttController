@@ -6,16 +6,18 @@
 
 // external libraries
 //#include <MemoryFree.h>
-#include <SwitchedDevice.h>
+//#include <SwitchedDevice.h>
 #include <AutomationBoard.h>
-
-// Macros
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 
 const byte BUFFER_SIZE            = 32;
 char progBuffer[BUFFER_SIZE];
 char charBuffer[BUFFER_SIZE];
+
+
+// Macros
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+
 
 const int BAUD_RATE               = 9600;
 

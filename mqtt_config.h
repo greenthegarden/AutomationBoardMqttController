@@ -8,14 +8,13 @@
 byte mqttServerAddr[]             = { 192, 168, 1, 55 };  // Pi eth0 interface
 char mqttClientId[]               = "automationboard";
 const int MQTT_PORT               = 1883;
-//#define MQTT_MAX_PACKET_SIZE        168
+#define MQTT_MAX_PACKET_SIZE        168
 //#define MQTT_KEEPALIVE              300
 
 long lastReconnectAttempt         = 0;
 const char COMMAND_SEPARATOR      = ',';
 
 char message[BUFFER_SIZE];
-
 
 // Status topics
 
@@ -37,12 +36,12 @@ PGM_P const STATUS_TOPICS[]    PROGMEM = { CONNECTED_STATUS,    // idx = 0
                                            MEMORY_STATUS,       // idx = 3
                                            TIME_STATUS,         // idx = 4
                                            ALARM_STATUS,        // idx = 5
-                                           RELAY_STATUS,        // idx = 4
+                                           RELAY_STATUS,        // idx = 6
                                            RELAY_1_STATUS,      // idx = 7
                                            RELAY_2_STATUS,      // idx = 8
                                            RELAY_3_STATUS,      // idx = 9
                                            RELAY_4_STATUS,      // idx = 10
-                                          };
+                                         };
 
 // Automation Board Input topics
 
@@ -75,16 +74,8 @@ PGM_P const REQUEST_TOPICS[]   PROGMEM = { STATE_REQUEST,          // idx = 0
 // Control topics
 
 const char RELAY_CONTROL[]     PROGMEM = "ab/control/relay";
-const char RELAY_1_CONTROL[]   PROGMEM = "ab/control/relay1";    // required to support openHAB MQTT Binding
-const char RELAY_2_CONTROL[]   PROGMEM = "ab/control/relay2";    // required to support openHAB MQTT Binding
-const char RELAY_3_CONTROL[]   PROGMEM = "ab/control/relay3";    // required to support openHAB MQTT Binding
-const char RELAY_4_CONTROL[]   PROGMEM = "ab/control/relay4";    // required to support openHAB MQTT Binding
 
 PGM_P const CONTROL_TOPICS[]   PROGMEM = { RELAY_CONTROL,       // idx = 0
-                                           RELAY_1_CONTROL,     // idx = 0
-                                           RELAY_2_CONTROL,     // idx = 0
-                                           RELAY_3_CONTROL,     // idx = 0
-                                           RELAY_4_CONTROL,     // idx = 0
                                          };
 
 
@@ -126,6 +117,26 @@ void publish_alarm_id(byte ref = 255)
   mqttClient.publish(progBuffer, itoa(ref, str, 10));
 }
 
+void publish_relay_state(byte relayIdx, boolean relayState) {
+  progBuffer[0] = '\0';
+  strcpy_P(progBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[6])));
+  // create message in format "idx,ON"
+  // add relay index
+  DEBUG_LOG(1, "progBuffer: ");
+  DEBUG_LOG(1, progBuffer);
+  charBuffer[0] = '\0';
+  sprintf(charBuffer, "%s%s", relayIdx + 1, COMMAND_SEPARATOR);
+  if (relayState) { // relay ON
+    DEBUG_LOG(1, "relay on");
+    sprintf(charBuffer, "%s%s%s", relayIdx + 1, COMMAND_SEPARATOR, 'ON');
+  } else {
+    DEBUG_LOG(1, "relay off");
+    sprintf(charBuffer, "%s%s%s", relayIdx + 1, COMMAND_SEPARATOR, 'OFF');
+  }
+  DEBUG_LOG(1, "charBuffer: ");
+  DEBUG_LOG(1, charBuffer);
+  mqttClient.publish(progBuffer, charBuffer);
+}
 
 
 #endif   /* AUTOMATIONBOARDMQTTCONTROLLER_MQTT_CONFIG_H_ */

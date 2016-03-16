@@ -105,9 +105,7 @@ void callback(char* topic, uint8_t* payload, unsigned int payloadLength)
             }
           }
           }
-          break;       
-        case 1 :
-          relay_switch_on_with_timer(relayIdx, duration);
+          break;
         default :
           DEBUG_LOG(1, "Unknown control topic arrived");
       }
