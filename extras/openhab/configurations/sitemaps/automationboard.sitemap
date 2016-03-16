@@ -1,12 +1,23 @@
 sitemap automationboard label="AutomationBoard Controller"
 {
-	Frame {
-		Text label="Relay 1" {
+	Frame label="Relay 1" {
 			Setpoint item=Relay1_Duration minValue=0 maxValue=600 step=5
-			Switch item=Relay1_Auto visibility=[Zone1_Auto==ON]
-			Switch item=Relay1_Manual visibility=[Zone1_Auto!=ON]
-			Switch item=relay1_RelayCtrl
-			Switch item=Relay1_Run
-    }
-  }
+//			Switch item=Relay1
+//			Switch item=Relay1_Preset_Dur label="Relay 1 Duration" mappings=[0="10 mins", 1="15 mins"]
+			Switch item=Relay1_Auto visibility=[Relay1_Auto==ON]
+			Switch item=Relay1_Manual visibility=[Relay1_Auto!=ON]
+//			Switch item=Relay1_RelayCtrl_10min
+//			Switch item=Relay1_RelayCtrl_15min
+//			Text item=Relay1_Test
+		}
+	Frame label="Relay 2" {
+			Setpoint item=Relay2_Duration minValue=0 maxValue=600 step=5
+//			Switch item=Relay1
+//			Switch item=Relay1_Preset_Dur label="Relay 1 Duration" mappings=[0="10 mins", 1="15 mins"]
+			Switch item=Relay2_Auto visibility=[Relay2_Auto==ON]
+			Switch item=Relay2_Manual visibility=[Relay2_Auto!=ON]
+//			Switch item=Relay1_RelayCtrl_10min
+//			Switch item=Relay1_RelayCtrl_15min
+//			Text item=Relay1_Test
+		}
 }

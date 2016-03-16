@@ -8,37 +8,106 @@ import org.joda.time.*
 //import java.util.concurrent.locks.ReentrantLock
 //import java.util.ArrayList
 
-var java.util.concurrent.locks.ReentrantLock lock = new java.util.concurrent.locks.ReentrantLock()
+//var java.util.concurrent.locks.ReentrantLock lock = new java.util.concurrent.locks.ReentrantLock()
 
 //var java.util.ArrayList zonesRequestsList = new java.util.ArrayList()
 
-val int Relay1_Duration_Default = 1
+val int Relay1_Duration_Default = 5
+val int Relay2_Duration_Default = 5
+
 
 rule "Irrigation startup"
 when
 	System started
 then
 	// ensure all relays are off at startup
-	sendCommand(Relay1_RelayCtrl, OFF)
+//	sendCommand(Relay1_RelayCtrl_10min, OFF)
+//	sendCommand(Relay1_RelayCtrl_15min, OFF)
 
 	// initialise durations
-	if (Relay1_Duration.state == Uninitialized) {
+	if (Relay1_Duration.state == Uninitialized)
 		postUpdate(Relay1_Duration, Relay1_Duration_Default)
-	}
+	if (Relay2_Duration.state == Uninitialized)
+		postUpdate(Relay2_Duration, Relay2_Duration_Default)
+//	if (Relay1_Preset_Dur.state == Uninitialized)
+//		postUpdate(Relay1_Preset_Dur, 0)
 end
 
-rule "Relay Manual"
+rule "Relay 1 Auto"
 when
-	Item Relay1_Manual received command
+//	Time cron "0 0/10 * 1/1 * ? *"	// every ten minutes for testing
+	Time cron "0 0 7 1/1 * ? *"		// every day at 7am"
 then
-	lock.lock()
-  try {
-		logInfo("automationboard", "Manual request relay1 " + receivedCommand.toString())
-		if (receivedCommand == "ON")
-			sendCommend(Relay1_Request, ON)
-		else
-			sendCommand(Relay1_Request, OFF)
-	} finally {
-    lock.unlock()
-  }
+	sendCommand(Relay1_Auto, ON)
 end
+
+rule "Relay 1 Activation"
+when
+	Item Relay1_Manual changed or
+	Item Relay1_Auto changed
+then
+//	logInfo("automationboard", "Relay1_Manual state changed. Relay1_Manual.state: [{}]. Relay1_Duration.state: [{}].", Relay1_Manual.state, Relay1_Duration.state)
+//	if (Relay1_Manual.state == ON) {
+//		if (Relay1_Preset_Dur.state == 0)
+//			sendCommand(Relay1_RelayCtrl_10min, ON)
+//		else if (Relay1_Preset_Dur.state == 1)
+//			sendCommand(Relay1_RelayCtrl_15min, ON)
+//	} else {
+//		if (Relay1_RelayCtrl_10min.state == ON)
+//			sendCommand(Relay1_RelayCtrl_10min, OFF)
+//		else if (Relay1_RelayCtrl_15min.state == ON)
+//			sendCommand(Relay1_RelayCtrl_15min, OFF)		
+//	}
+	var String message
+	if (Relay1_Manual.state == ON || Relay1_Auto.state == ON) {
+		message = "1" + "," + Relay1_Duration.state.toString
+	} else {
+		message = "1,0"
+	}
+	logInfo("automationboard", "message is [{}].", message)	
+//	publish("pi", "ab/control/relay", message)
+	Relay_Control.sendCommand(message)
+end
+
+rule "Relay 2 Activation"
+when
+	Item Relay2_Manual changed
+then
+	logInfo("automationboard", "Relay2_Manual state changed. Relay2_Manual.state: [{}]. Relay2_Duration.state: [{}].", Relay2_Manual.state, Relay2_Duration.state)
+	var String message
+	if (Relay2_Manual.state == ON) {
+		message = "2" + "," + Relay2_Duration.state.toString
+	} else {
+		message = "2,0"
+	}
+//	logInfo("automationboard", "message is [{}].", message)	
+	Relay_Control.sendCommand(message)
+end
+
+rule "Relay State"
+when
+	Item Relay_State changed
+then
+	logInfo("automationboard", "Relay_State state changed. Relay_State.state: [{}].", Relay_State.state)
+
+	val String[] messageParts = Relay_State.state.toString.split(",");
+	val String relay = messageParts.get(0);
+	val String state = messageParts.get(1);
+	
+	if (state == "0") {		// relay was turned off
+		if (relay == "1") {
+			if (Relay1_Manual.state == ON)
+				sendCommand(Relay1_Manual, OFF)
+			if (Relay1_Auto.state == ON)
+				sendCommand(Relay1_Auto, OFF)
+		}
+		if (relay == "2") {
+			if (Relay2_Manual.state == ON)
+				sendCommand(Relay2_Manual, OFF)
+			if (Relay2_Auto.state == ON)
+				sendCommand(Relay2_Auto, OFF)
+		}
+	}	
+end
+
+

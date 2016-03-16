@@ -1,9 +1,22 @@
 Group    AutomationBoard
 
 /* Relay 1 */
-Number   Relay1_Duration   "Duration [%d mins]" (AutomationBoard)	{mqtt="<[pi:ab/control/duration_1:state:default]"}
-Switch   Relay1_RelayCtrl                       (AutomationBoard)	{mqtt=">[pi:ab/control/relay_1:command:ON:1],>[pi:ab/control/relay_1:command:OFF:0],<[pi:ab/status/relay_1:state:MAP(1on0off.map)]"}
-Switch   Relay1_Auto		   "Automatic State"    (AutomationBoard)
+//Switch   Relay1                                 (AutomationBoard)   {mqtt=">[pi:ab/control/relay:command:*:${itemName},${command}"}
+Number   Relay1_Duration   "Duration [%d mins]" (AutomationBoard)
+//Number   Relay1_Preset_Dur
+//Switch   Relay1_RelayCtrl                       (AutomationBoard)	{mqtt=">[pi:ab/control/relay_1:command:ON:ON],>[pi:ab/control/relay_1:command:OFF:OFF],<[pi:ab/status/relay_1:state:MAP(1on0off.map)]"}
+Switch   Relay1_Auto       "Automatic State"    (AutomationBoard)
 Switch   Relay1_Manual	   "Manual State"       (AutomationBoard)
-Switch   Relay1_Request
-Switch   Relay1_Run
+//Switch   Relay1_Request
+//Switch   Relay1_RelayCtrl_10min					(AutomationBoard)   {mqtt=">[pi:ab/control/relay_1:command:ON:0,10],>[pi:ab/control/relay_1:command:OFF:0,0],<[pi:ab/status/relay_1:state:MAP(1on0off.map)]"}
+//Switch   Relay1_RelayCtrl_15min					(AutomationBoard)   {mqtt=">[pi:ab/control/relay_1:command:ON:0,15],>[pi:ab/control/relay_1:command:OFF:0,0],<[pi:ab/status/relay_1:state:MAP(1on0off.map)]"}
+//Switch   Relay1_Test       "Run Test"           (AutomationBoard)   {mqtt=">[pi:ab/control/relay_1:command:ON:0,1],>[pi:ab/control/relay_1:command:OFF:0,0],<[pi:ab/status/relay_1:state:MAP(1on0off.map)]"}
+//String   Relay1_RelayCtrl  "[%s]"           (AutomationBoard)   {mqtt=">[pi:ab/control/relay:command:*:default]"}
+
+/* Relay 2 */
+Number   Relay2_Duration   "Duration [%d mins]" (AutomationBoard)
+Switch   Relay2_Auto       "Automatic State"    (AutomationBoard)
+Switch   Relay2_Manual	   "Manual State"       (AutomationBoard)
+
+String   Relay_Control  "[%s]"           (AutomationBoard)   {mqtt=">[pi:ab/control/relay:command:*:default]"}
+String   Relay_State    "[%s]"           (AutomationBoard)   {mqtt="<[pi:ab/status/relay:state:default]"}
