@@ -24,35 +24,45 @@ const char IP_ADDR_STATUS[]    PROGMEM = "ab/status/ip_addr";
 const char UPTIME_STATUS[]     PROGMEM = "ab/status/uptime";
 const char MEMORY_STATUS[]     PROGMEM = "ab/status/memory";
 const char TIME_STATUS[]       PROGMEM = "ab/status/time";
+const char ALARM_STATUS[]      PROGMEM = "ab/status/alarm";
 const char RELAY_STATUS[]      PROGMEM = "ab/status/relay";
+const char RELAY_1_STATUS[]    PROGMEM = "ab/status/relay1";    // required to support openHAB MQTT Binding
+const char RELAY_2_STATUS[]    PROGMEM = "ab/status/relay2";    // required to support openHAB MQTT Binding
+const char RELAY_3_STATUS[]    PROGMEM = "ab/status/relay3";    // required to support openHAB MQTT Binding
+const char RELAY_4_STATUS[]    PROGMEM = "ab/status/relay4";    // required to support openHAB MQTT Binding
 
 PGM_P const STATUS_TOPICS[]    PROGMEM = { CONNECTED_STATUS,    // idx = 0
                                            IP_ADDR_STATUS,      // idx = 1
                                            UPTIME_STATUS,       // idx = 2
                                            MEMORY_STATUS,       // idx = 3
                                            TIME_STATUS,         // idx = 4
-                                           RELAY_STATUS,        // idx = 5
+                                           ALARM_STATUS,        // idx = 5
+                                           RELAY_STATUS,        // idx = 4
+                                           RELAY_1_STATUS,      // idx = 7
+                                           RELAY_2_STATUS,      // idx = 8
+                                           RELAY_3_STATUS,      // idx = 9
+                                           RELAY_4_STATUS,      // idx = 10
                                           };
 
-// Relayduino Input topics
+// Automation Board Input topics
 
-const char ANALOG_IN_1_INPUT[]       PROGMEM = "ab/input/analog_in_1";
-const char ANALOG_IN_2_INPUT[]       PROGMEM = "ab/input/analog_in_2";
-const char ANALOG_IN_3_INPUT[]       PROGMEM = "ab/input/analog_in_3";
-
-const char OPTO_INPUT_1_INPUT[]      PROGMEM = "ab/input/opto_input_1";
-const char OPTO_INPUT_2_INPUT[]      PROGMEM = "ab/input/opto_input_2";
-const char OPTO_INPUT_3_INPUT[]      PROGMEM = "ab/input/opto_input_3";
-const char OPTO_INPUT_4_INPUT[]      PROGMEM = "ab/input/opto_input_4";
-
-PGM_P const INPUT_TOPICS[]     PROGMEM = { ANALOG_IN_1_INPUT,     // idx = 0
-                                           ANALOG_IN_2_INPUT,     // idx = 1
-                                           ANALOG_IN_3_INPUT,     // idx = 2
-                                           OPTO_INPUT_1_INPUT,    // idx = 3
-                                           OPTO_INPUT_2_INPUT,    // idx = 4
-                                           OPTO_INPUT_3_INPUT,    // idx = 5
-                                           OPTO_INPUT_4_INPUT,    // idx = 6
-                                          };
+//const char ANALOG_IN_1_INPUT[]       PROGMEM = "ab/input/analog_in_1";
+//const char ANALOG_IN_2_INPUT[]       PROGMEM = "ab/input/analog_in_2";
+//const char ANALOG_IN_3_INPUT[]       PROGMEM = "ab/input/analog_in_3";
+//
+//const char OPTO_INPUT_1_INPUT[]      PROGMEM = "ab/input/opto_input_1";
+//const char OPTO_INPUT_2_INPUT[]      PROGMEM = "ab/input/opto_input_2";
+//const char OPTO_INPUT_3_INPUT[]      PROGMEM = "ab/input/opto_input_3";
+//const char OPTO_INPUT_4_INPUT[]      PROGMEM = "ab/input/opto_input_4";
+//
+//PGM_P const INPUT_TOPICS[]     PROGMEM = { ANALOG_IN_1_INPUT,     // idx = 0
+//                                           ANALOG_IN_2_INPUT,     // idx = 1
+//                                           ANALOG_IN_3_INPUT,     // idx = 2
+//                                           OPTO_INPUT_1_INPUT,    // idx = 3
+//                                           OPTO_INPUT_2_INPUT,    // idx = 4
+//                                           OPTO_INPUT_3_INPUT,    // idx = 5
+//                                           OPTO_INPUT_4_INPUT,    // idx = 6
+//                                          };
 
 // Request topics
 
@@ -64,9 +74,17 @@ PGM_P const REQUEST_TOPICS[]   PROGMEM = { STATE_REQUEST,          // idx = 0
 
 // Control topics
 
-const char RELAY_CONTROL[]   PROGMEM = "ab/control/relay";
+const char RELAY_CONTROL[]     PROGMEM = "ab/control/relay";
+const char RELAY_1_CONTROL[]   PROGMEM = "ab/control/relay1";    // required to support openHAB MQTT Binding
+const char RELAY_2_CONTROL[]   PROGMEM = "ab/control/relay2";    // required to support openHAB MQTT Binding
+const char RELAY_3_CONTROL[]   PROGMEM = "ab/control/relay3";    // required to support openHAB MQTT Binding
+const char RELAY_4_CONTROL[]   PROGMEM = "ab/control/relay4";    // required to support openHAB MQTT Binding
 
-PGM_P const CONTROL_TOPICS[]   PROGMEM = { RELAY_CONTROL,     // idx = 0
+PGM_P const CONTROL_TOPICS[]   PROGMEM = { RELAY_CONTROL,       // idx = 0
+                                           RELAY_1_CONTROL,     // idx = 0
+                                           RELAY_2_CONTROL,     // idx = 0
+                                           RELAY_3_CONTROL,     // idx = 0
+                                           RELAY_4_CONTROL,     // idx = 0
                                          };
 
 

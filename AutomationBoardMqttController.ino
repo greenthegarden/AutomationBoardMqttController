@@ -81,12 +81,13 @@ void callback(char* topic, uint8_t* payload, unsigned int payloadLength)
     if (controlTopicFound) {
       DEBUG_LOG(1, "Control topic index");
       DEBUG_LOG(1, topicIdx);
-      if (topicIdx == 0) {
+      switch (topicIdx) {
+        case 0 :
           DEBUG_LOG(1, "RELAY_CONTROL topic arrived");
           // message is expected to be in format "relay,duration"
           // get relay and duration from message
           // see http://arduino.stackexchange.com/questions/1013/how-do-i-split-an-incoming-string
-          char* separator = strchr(message, COMMAND_SEPARATOR);
+          { char* separator = strchr(message, COMMAND_SEPARATOR);
           DEBUG_LOG(1, "separator: ");
           DEBUG_LOG(1, separator);
           if (separator != 0) {
@@ -103,7 +104,11 @@ void callback(char* topic, uint8_t* payload, unsigned int payloadLength)
               relay_switch_off(relayIdx);
             }
           }
-      } else {
+          }
+          break;       
+        case 1 :
+          relay_switch_on_with_timer(relayIdx, duration);
+        default :
           DEBUG_LOG(1, "Unknown control topic arrived");
       }
     }

@@ -12,25 +12,6 @@ byte relay_state(byte idx)
   return(digitalRead(RELAY_PINS_USED[idx]));
 }
 
-void publish_relays_state()
-{
-  for (byte idx = 0; idx < ARRAY_SIZE(RELAY_PINS_USED); idx++) {
-    if (digitalRead(RELAY_PINS_USED[idx])) {
-      DEBUG_LOG(1, "relay on");
-      progBuffer[0] = '\0';
-      strcpy_P(progBuffer, (PGM_P)pgm_read_word(&(STATUS_TOPICS[4])));
-      char str[2];
-      mqttClient.publish(progBuffer, itoa(idx+1, str, 10));
-    } else {
-      DEBUG_LOG(1, "relay off");
-      progBuffer[0] = '\0';
-      strcpy_P(progBuffer, (PGM_P)pgm_read_word(&(STATUS_TOPICS[5])));
-      char str[2];
-      mqttClient.publish(progBuffer, itoa(idx+1, str, 10));
-    }
-  }
-}
-
 // returns 1 if relay is currently on and switched off, else returns 0
 byte relay_switch_off(byte idx)
 {
