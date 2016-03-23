@@ -21,8 +21,9 @@ char charBuffer[BUFFER_SIZE];
 
 const int BAUD_RATE               = 9600;
 
+
 #include <TimeAlarms.h>
-byte currentTimerRef = 255;
+byte currentTimerRef              = 255;
 
 
 #include "ethernet_config.h"

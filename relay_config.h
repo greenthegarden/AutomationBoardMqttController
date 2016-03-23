@@ -4,7 +4,9 @@
 
 #include <AutomationBoard.h>
 
+
 const byte RELAY_PINS_USED[] = {RELAY_1, RELAY_2, RELAY_3, RELAY_4};
+
 
 // returns 1 if relay connected to given pin is on, else returns 0
 byte relay_state(byte idx)
@@ -28,7 +30,6 @@ byte relay_switch_off(byte idx)
 }
 
 // used as callback functions for Alarm
-
 void relay1_switch_off() {
   byte relayIdx=0;
   relay_switch_off(relayIdx);
@@ -49,6 +50,7 @@ void relay4_switch_off() {
   relay_switch_off(relayIdx);
 }
 
+// used by callback as a void function to switch off relay which is currenlty on
 void relays_switch_off()
 {
   for (byte idx = 0; idx < ARRAY_SIZE(RELAY_PINS_USED); idx++) {

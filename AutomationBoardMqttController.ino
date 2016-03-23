@@ -5,14 +5,14 @@ boolean mqtt_connect()
   DEBUG_LOG(1, "Attempting MQTT connection ...");
   if (mqttClient.connect(mqttClientId)) {
     DEBUG_LOG(1, "  connected");
-    // Once connected, publish an announcement...
+    // Once connected, publish an announcement ...
     publish_connected();
     publish_ip_address();
     // ... and subscribe to topics (should have list)
     mqttClient.subscribe("ab/control/#");
     mqttClient.subscribe("ab/request/#");
   } else {
-      DEBUG_LOG(1, "failed, rc=");
+      DEBUG_LOG(1, "failed, rc = ");
       DEBUG_LOG(1, mqttClient.state());
   }
   return mqttClient.connected();
@@ -60,7 +60,7 @@ void callback(char* topic, uint8_t* payload, unsigned int payloadLength)
   }
   if (requestTopicFound) {
     if (topicIdx == 0) {  // topic is STATE_REQUEST
-      
+      DEBUG_LOG(1, "STATE_REQUEST topic arrived");
     } else {  // unknown request topic has arrived - ignore!!
       DEBUG_LOG(1, "Unknown request topic arrived");
     }
@@ -151,7 +151,7 @@ void loop()
 
   if (!mqttClient.connected()) {
     long now = millis();
-    if (now - lastReconnectAttempt > 5000) {
+    if (now - lastReconnectAttempt > RECONNECTION_ATTEMPT_INTERVAL) {
       lastReconnectAttempt = now;
       // Attempt to reconnect
       if (mqtt_connect()) {
