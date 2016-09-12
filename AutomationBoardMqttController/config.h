@@ -4,8 +4,8 @@
 
 #include "Debug.h"
 
-#define VERSION_MAJOR 3
-#define VERSION_MINOR 1
+#define VERSION_MAJOR 1
+#define VERSION_MINOR 0
 
 // external libraries
 #include <MemoryFree.h>

@@ -153,13 +153,16 @@ void loop()
   // require an Alarm.delay in order to allow alarms to work
   Alarm.delay(0);
 
+  unsigned long now = millis();
+
   if (!mqttClient.connected()) {
-    long now = millis();
+    mqttClientConnected = false;
     if (now - lastReconnectAttempt > RECONNECTION_ATTEMPT_INTERVAL) {
       lastReconnectAttempt = now;
       // Attempt to reconnect
       if (mqtt_connect()) {
         lastReconnectAttempt = 0;
+        mqttClientConnected = true;
       }
     }
   } else {
@@ -173,5 +176,4 @@ void loop()
       publish_status();
     }
   }
-
 }
