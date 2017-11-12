@@ -10,14 +10,14 @@
 // external libraries
 #include <MemoryFree.h>
 //#include <SwitchedDevice.h>
-#include <AutomationBoard.h>
+// #include <AutomationBoard.h>
 
 // Macros
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 // global variable definitions
 #if DEBUG_LEVEL > 0
-const int BAUD_RATE               = 9600;
+const unsigned long BAUD_RATE     = 9600;
 #endif
 
 const byte BUFFER_SIZE            = 32;
@@ -29,12 +29,15 @@ unsigned long statusPreviousMillis = 0UL;
 
 #include "ethernetConfig.h"
 #include "mqttConfig.h"
-#include "alarmConfig.h"
-#include "relayConfig.h"
 
-void no_network_behaviour() {
-  relays_switch_off();
-}
+#include "icscConfig.h"
+
+// #include "alarmConfig.h"
+// #include "relayConfig.h"
+//
+// void no_network_behaviour() {
+//   relays_switch_off();
+// }
 
 
 #endif   /* AUTOMATIONBOARDMQTTCONTROLLER_CONFIG_H_ */

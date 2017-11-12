@@ -5,7 +5,7 @@
 #include <PubSubClient.h>
 
 // MQTT parameters
-IPAddress mqttServerAddr(192, 168, 1, 50);        // openHAB
+IPAddress mqttServerAddr(192, 168, 1, 1);        // openHAB
 const char mqttClientId[]                         = "automationboard";
 const int MQTT_PORT                               = 1883;
 
@@ -17,7 +17,7 @@ boolean mqttClientConnected                       = false;
 const char COMMAND_SEPARATOR                      = ',';
 
 // callback function definition
-void callback(char* topic, uint8_t* payload, unsigned int length);
+void callback(char* topic, uint8_t* payload, unsigned int length) {}
 
 PubSubClient mqttClient(mqttServerAddr, MQTT_PORT, callback, ethernetClient);
 
@@ -59,6 +59,7 @@ const char MEMORY_STATUS[]     PROGMEM = "ab/status/memory";
 const char TIME_STATUS[]       PROGMEM = "ab/status/time";
 const char ALARM_STATUS[]      PROGMEM = "ab/status/alarm";
 const char RELAY_STATUS[]      PROGMEM = "ab/status/relay";
+const char FLOWRATE_STATUS[]   PROGMEM = "ab/status/flowrate";
 
 PGM_P const STATUS_TOPICS[]    PROGMEM = { MQTT_STATUS,         // idx = 0
                                            VERSION_STATUS,      // idx = 1
@@ -69,6 +70,7 @@ PGM_P const STATUS_TOPICS[]    PROGMEM = { MQTT_STATUS,         // idx = 0
                                            TIME_STATUS,         // idx = 6
                                            ALARM_STATUS,        // idx = 7
                                            RELAY_STATUS,        // idx = 8
+                                           FLOWRATE_STATUS,
                                          };
 
 // STATUS_TOPICS indices, must match table above
@@ -82,6 +84,7 @@ typedef enum {
   TIME_STATUS_IDX          = 6,
   ALARM_STATUS_IDX         = 7,
   RELAY_STATUS_IDX         = 8,
+  FLOWRATE_STATUS_IDX      = 9,
 } status_topics;
 
 // Automation Board Input topics
@@ -180,25 +183,25 @@ void publish_memory() {
   mqttClient.publish(topicBuffer, itoa(getFreeMemory(), payloadBuffer, 10));
 }
 
-void publish_relay_state(byte relayIdx, boolean relayState) {
-  payloadBuffer[0] = '\0';
-  if (relayState) { // relay ON
-    DEBUG_LOG(1, "relay on");
-    sprintf(payloadBuffer, "%i%c%i", relayIdx + 1, COMMAND_SEPARATOR, 1);
-  } else {
-    DEBUG_LOG(1, "relay off");
-    sprintf(payloadBuffer, "%i%c%i", relayIdx + 1, COMMAND_SEPARATOR, 0);
-  }
-  DEBUG_LOG(1, "payloadBuffer: ");
-  DEBUG_LOG(1, payloadBuffer);
-  topicBuffer[0] = '\0';
-  strcpy_P(topicBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[RELAY_STATUS_IDX])));
-  // create message in format "idx,ON"
-  // add relay index
-  DEBUG_LOG(1, "topicBuffer: ");
-  DEBUG_LOG(1, topicBuffer);
-  mqttClient.publish(topicBuffer, payloadBuffer);
-}
+// void publish_relay_state(byte relayIdx, boolean relayState) {
+//   payloadBuffer[0] = '\0';
+//   if (relayState) { // relay ON
+//     DEBUG_LOG(1, "relay on");
+//     sprintf(payloadBuffer, "%i%c%i", relayIdx + 1, COMMAND_SEPARATOR, 1);
+//   } else {
+//     DEBUG_LOG(1, "relay off");
+//     sprintf(payloadBuffer, "%i%c%i", relayIdx + 1, COMMAND_SEPARATOR, 0);
+//   }
+//   DEBUG_LOG(1, "payloadBuffer: ");
+//   DEBUG_LOG(1, payloadBuffer);
+//   topicBuffer[0] = '\0';
+//   strcpy_P(topicBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[RELAY_STATUS_IDX])));
+//   // create message in format "idx,ON"
+//   // add relay index
+//   DEBUG_LOG(1, "topicBuffer: ");
+//   DEBUG_LOG(1, topicBuffer);
+//   mqttClient.publish(topicBuffer, payloadBuffer);
+// }
 
 void publish_configuration() {
   publish_version();
